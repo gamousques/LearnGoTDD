@@ -11,18 +11,18 @@ func Hello(name, language string) string {
 		name =  "World"
 	} 
 
-	var languagePrefix string
+	return GetLanguagePrefix(language ) + name
+}
 
+func GetLanguagePrefix(language string) string {
 	switch language {
 		case "Spanish":
-			languagePrefix = spanishPrefix
+			return spanishPrefix
 		case "French":
-			languagePrefix = frenchPrefix
+			return frenchPrefix
 	default:
-		languagePrefix = englishPrefix
+		return englishPrefix
 	}
-
-	return languagePrefix + name
 }
 
 func main() {
