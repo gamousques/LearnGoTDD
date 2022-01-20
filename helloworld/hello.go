@@ -6,10 +6,10 @@ const messagePrefix = "Hello, "
 
 func Hello(name string) string {
 	if name == "" {
-		return "Hello, World"
-	} else {
-		return messagePrefix + name
-	}
+		name =  "World"
+	} 
+	
+	return messagePrefix + name
 }
 
 func main() {
