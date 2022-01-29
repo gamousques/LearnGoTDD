@@ -82,11 +82,23 @@ func TestDelete(t *testing.T) {
 		if err != ErrWordNotFound {
 			t.Errorf("Expected %q to be deleted", word)
 		}
+	})
 
+	t.Run("given a word that no exists returns with no error", func(t *testing.T) {
+		word := "test"
+		dictionary := Dictionary{}
 
+		dictionary.Delete(word)
+
+		_, err := dictionary.Search(word)
+
+	if err != ErrWordNotFound {
+		t.Errorf("Expected %q to be deleted", word)
+	}
 
 	})
 }
+
 func assertStrings(t testing.TB, got, want string) {
 	t.Helper()
 	if got != want {
