@@ -2,11 +2,8 @@ package main
 
 import "time"
 
-type DefaultSleeper struct {}
 
-func (s DefaultSleeper) Sleep() {
-	time.Sleep(1 * time.Second)
-}
+
 
 type SpySleeper struct {
 	Calls int
@@ -32,3 +29,20 @@ func (s *SpyCountDownOperations) Write(p []byte) (n int, err error) {
 
 const sleep = "sleep"
 const write = "write"
+
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep func(time.Duration)
+}
+
+func (cs ConfigurableSleeper) Sleep() {
+	cs.sleep(cs.duration)
+}
+
+type SpyTime struct {
+	durationSlept time.Duration
+}
+
+func (st *SpyTime) Sleep(duration time.Duration) {
+	st.durationSlept = duration
+}
