@@ -4,23 +4,29 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 )
 
 const finalWord = "Go!"
 const countDownStart = 3
 
-func Countdown(buffer io.Writer)  {
+
+type Sleeper interface {
+	Sleep()
+}
+
+func Countdown(buffer io.Writer, waitTime Sleeper)  {
 	for i := countDownStart; i > 0; i-- {
+		waitTime.Sleep()
 		fmt.Fprintln(buffer,  i)
 	}
 
-	time.Sleep(1 * time.Second)
+	waitTime.Sleep()
 	fmt.Fprint(buffer, finalWord)
 
 }
 
 
 func main() {
-	Countdown(os.Stdout)
+	slp := &DefaultSleeper{}
+	Countdown(os.Stdout, slp)
 }
