@@ -1,10 +1,26 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"io"
+	"os"
+	"time"
 )
 
-func Countdown(buffer *bytes.Buffer)  {
-	fmt.Fprint(buffer,  "3")
+const finalWord = "Go!"
+const countDownStart = 3
+
+func Countdown(buffer io.Writer)  {
+	for i := countDownStart; i > 0; i-- {
+		fmt.Fprintln(buffer,  i)
+	}
+
+	time.Sleep(1 * time.Second)
+	fmt.Fprint(buffer, finalWord)
+
+}
+
+
+func main() {
+	Countdown(os.Stdout)
 }
