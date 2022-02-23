@@ -1,6 +1,7 @@
 package racer
 
 import (
+
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -8,21 +9,41 @@ import (
 )
 
 func TestRacer(t *testing.T) {
-	slowServer := makeDelayedServer(20 * time.Microsecond)
-	fastServer := makeDelayedServer(0 * time.Microsecond)
+	t.Run("check if one runs faster than the other using mocks", func(t *testing.T) {
+		slowServer := makeDelayedServer(20 * time.Millisecond)
+		fastServer := makeDelayedServer(0 * time.Millisecond)
+	
+		defer slowServer.Close()
+		defer fastServer.Close()
+	
+		slowURL := slowServer.URL
+		fastURL := fastServer.URL
+	
+		want := fastURL
+		got, err := Racer(slowURL, fastURL, 1*time.Second)
+	
+		if err != nil {
+			t.Fatalf("expected and error but did not get one! %v", err)
+		}
+		if got != want {
+			t.Errorf("got: %q, want: %q", got,want)
+		}
+	})
 
-	defer slowServer.Close()
-	defer fastServer.Close()
+	t.Run("returns an error if a server timeouts after 10 secs", func(t *testing.T) {
+		serverA := makeDelayedServer(11 * time.Second)
+		serverB := makeDelayedServer(12 * time.Second)
 
-	slowURL := slowServer.URL
-	fastURL := fastServer.URL
+		defer serverA.Close()
+		defer serverB.Close()
 
-	want := fastURL
-	got := Racer(slowURL, fastURL)
+		_, err := Racer(serverA.URL, serverB.URL, 10 * time.Second)
 
-	if got != want {
-		t.Errorf("got: %q, want: %q", got,want)
-	}
+		if err != nil {
+			t.Error("expected and error but did not get one!")
+		}
+	})
+
 
 }
 
